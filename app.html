@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cross Note</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <h1 class="page-title">Cross Note</h1>
+
+    <div id="input-area">
+        <input type="text" id="noteInput" placeholder="Type a note...">
+        <button id="saveBtn">SAVE</button>
+    </div>
+
+    <div id="delete-area">
+        <button id="deleteBtn">Delete Selected</button>
+    </div>
+
+    <div id="notesList"></div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+    <script src="script.js"></script>
+</body>
+</html>
