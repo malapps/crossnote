@@ -23,9 +23,33 @@ body {
     margin-left: 5px;
 }
 
+#delete-area {
+    margin-top: 20px;
+}
+
+#deleteBtn {
+    padding: 8px 12px;
+    background-color: #d9534f;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#deleteBtn:hover {
+    background-color: #c9302c;
+}
+
 .note-item {
     background: #f2f2f2;
     padding: 10px;
     margin-top: 10px;
     border-radius: 4px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.note-text {
+    flex-grow: 1;
 }

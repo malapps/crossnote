@@ -1,4 +1,3 @@
-// --- 1. Your Firebase config (paste yours here) ---
 const firebaseConfig = {
     apiKey: "AIzaSyDWPnTqWVUNOS1RAh9DtTE_OVMUobc9jPs",
     authDomain: "milk-a5681.firebaseapp.com",
@@ -7,13 +6,11 @@ const firebaseConfig = {
     messagingSenderId: "502144590699",
     appId: "1:502144590699:web:7fc917c4cedfdb78fea22e",
     measurementId: "G-KRWCX432HD"
-  };
+};
 
-// --- 2. Initialise Firebase ---
 const app = firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-// --- 3. Save note to Firestore ---
 document.getElementById("saveBtn").addEventListener("click", async function () {
     const noteText = document.getElementById("noteInput").value.trim();
     if (noteText === "") return;
@@ -26,7 +23,15 @@ document.getElementById("saveBtn").addEventListener("click", async function () {
     document.getElementById("noteInput").value = "";
 });
 
-// --- 4. Load notes in real time ---
+document.getElementById("deleteBtn").addEventListener("click", async function () {
+    const checkboxes = document.querySelectorAll(".note-checkbox:checked");
+
+    for (let box of checkboxes) {
+        const id = box.getAttribute("data-id");
+        await db.collection("notes").doc(id).delete();
+    }
+});
+
 db.collection("notes")
   .orderBy("timestamp", "desc")
   .onSnapshot((snapshot) => {
@@ -34,12 +39,23 @@ db.collection("notes")
       notesList.innerHTML = "";
 
       snapshot.forEach((doc) => {
-          const note = doc.data().text;
+          const data = doc.data();
 
-          let div = document.createElement("div");
-          div.className = "note-item";
-          div.textContent = note;
+          const container = document.createElement("div");
+          container.className = "note-item";
 
-          notesList.appendChild(div);
+          const checkbox = document.createElement("input");
+          checkbox.type = "checkbox";
+          checkbox.className = "note-checkbox";
+          checkbox.setAttribute("data-id", doc.id);
+
+          const text = document.createElement("div");
+          text.className = "note-text";
+          text.textContent = data.text;
+
+          container.appendChild(checkbox);
+          container.appendChild(text);
+
+          notesList.appendChild(container);
       });
   });
