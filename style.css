@@ -1,0 +1,31 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+}
+
+.page-title {
+    text-align: center;
+    padding-bottom: 10px;
+    border-bottom: 2px solid black;
+}
+
+#input-area {
+    margin-top: 20px;
+}
+
+#noteInput {
+    width: 300px;
+    padding: 8px;
+}
+
+#saveBtn {
+    padding: 8px 12px;
+    margin-left: 5px;
+}
+
+.note-item {
+    background: #f2f2f2;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 4px;
+}
