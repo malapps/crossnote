@@ -1,3 +1,13 @@
+// Determine the note space from the URL path
+let path = window.location.pathname.split("/").filter(Boolean);
+
+// path looks like ["crossnote", "fdr99notes"]
+// If no custom space is provided, default to "default"
+let space = path[1] || "default";
+
+// Firestore collection name becomes: notes_<space>
+let collectionName = "notes_" + space;
+
 const firebaseConfig = {
     apiKey: "AIzaSyDWPnTqWVUNOS1RAh9DtTE_OVMUobc9jPs",
     authDomain: "milk-a5681.firebaseapp.com",
@@ -15,7 +25,7 @@ document.getElementById("saveBtn").addEventListener("click", async function () {
     const noteText = document.getElementById("noteInput").value.trim();
     if (noteText === "") return;
 
-    await db.collection("notes").add({
+    await db.collection(collectionName).add({
         text: noteText,
         timestamp: Date.now()
     });
@@ -28,11 +38,11 @@ document.getElementById("deleteBtn").addEventListener("click", async function ()
 
     for (let box of checkboxes) {
         const id = box.getAttribute("data-id");
-        await db.collection("notes").doc(id).delete();
+        await db.collection(collectionName).doc(id).delete();
     }
 });
 
-db.collection("notes")
+db.collection(collectionName)
   .orderBy("timestamp", "desc")
   .onSnapshot((snapshot) => {
       const notesList = document.getElementById("notesList");
