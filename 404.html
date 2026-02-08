@@ -4,98 +4,174 @@
   <meta charset="UTF-8">
   <title>Cross Note</title>
 
+  <!-- Mobile friendly -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
   <style>
     body {
       font-family: sans-serif;
+      background: #D0E8D0;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
       max-width: 600px;
       margin: 40px auto;
+      padding: 20px;
     }
 
     h1 {
       border-bottom: 2px solid #000;
       padding-bottom: 5px;
+      margin-bottom: 20px;
+      text-align: center;
     }
 
     .input-row {
       display: flex;
-      gap: 8px;
-      margin-bottom: 20px;
+      gap: 10px;
+      margin-bottom: 15px;
     }
 
-    input {
+    input[type="text"] {
       flex: 1;
-      padding: 8px;
+      padding: 12px;
       font-size: 16px;
     }
 
     button {
-      padding: 8px 16px;
+      padding: 12px 18px;
       font-size: 16px;
+      cursor: pointer;
+    }
+
+    .delete-btn {
+      margin-bottom: 20px;
+      width: 100%;
     }
 
     .note {
-      padding: 8px;
-      border-bottom: 1px solid #ddd;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 10px 0;
+      border-bottom: 1px solid #aaa;
+    }
+
+    .note input[type="checkbox"] {
+      margin-top: 4px;
+      transform: scale(1.2);
+    }
+
+    .note-text {
+      flex: 1;
+      font-size: 16px;
+      word-break: break-word;
+    }
+
+    @media (max-width: 480px) {
+      .input-row {
+        flex-direction: column;
+      }
+
+      button {
+        width: 100%;
+      }
     }
   </style>
 </head>
 <body>
 
-  <h1>Cross Note</h1>
+  <div class="container">
+    <h1>Cross Note</h1>
 
-  <div class="input-row">
-    <input id="noteInput" placeholder="Type a note..">
-    <button id="saveBtn">SAVE</button>
+    <div class="input-row">
+      <input id="noteInput" type="text" placeholder="Type a note..">
+      <button id="saveBtn">SAVE</button>
+    </div>
+
+    <button class="delete-btn" id="deleteBtn">
+      Delete Selected
+    </button>
+
+    <div id="notes"></div>
   </div>
 
-  <div id="notes"></div>
-
   <script>
-    // --- extract "fdr" from /crossnote/fdr ---
+    // --- extract workspace id (e.g. fdr) ---
     const base = '/crossnote/';
     const path = window.location.pathname;
     const userId = path.replace(base, '').replace('/', '');
 
     if (!userId) {
       document.body.innerHTML = '<h2>Invalid workspace</h2>';
-      throw new Error('No userId');
+      throw new Error('No workspace id');
     }
 
-    // --- simple in-memory notes ---
+    // --- in-memory notes ---
     const notes = [];
 
     const input = document.getElementById('noteInput');
-    const button = document.getElementById('saveBtn');
+    const saveBtn = document.getElementById('saveBtn');
+    const deleteBtn = document.getElementById('deleteBtn');
     const notesDiv = document.getElementById('notes');
 
-    button.addEventListener('click', saveNote);
+    saveBtn.addEventListener('click', saveNote);
     input.addEventListener('keypress', e => {
       if (e.key === 'Enter') saveNote();
     });
+
+    deleteBtn.addEventListener('click', deleteSelected);
 
     function saveNote() {
       const text = input.value.trim();
       if (!text) return;
 
-      notes.unshift(text); // newest first
+      notes.unshift({
+        text,
+        selected: false
+      });
+
       input.value = '';
+      render();
+    }
+
+    function deleteSelected() {
+      for (let i = notes.length - 1; i >= 0; i--) {
+        if (notes[i].selected) {
+          notes.splice(i, 1);
+        }
+      }
       render();
     }
 
     function render() {
       notesDiv.innerHTML = '';
-      notes.forEach(note => {
-        const div = document.createElement('div');
-        div.className = 'note';
-        div.textContent = note;
-        notesDiv.appendChild(div);
+
+      notes.forEach((note, index) => {
+        const row = document.createElement('div');
+        row.className = 'note';
+
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.checked = note.selected;
+        checkbox.addEventListener('change', () => {
+          note.selected = checkbox.checked;
+        });
+
+        const textDiv = document.createElement('div');
+        textDiv.className = 'note-text';
+        textDiv.textContent = note.text;
+
+        row.appendChild(checkbox);
+        row.appendChild(textDiv);
+        notesDiv.appendChild(row);
       });
     }
 
-    // Optional: expose for debugging later
     console.log('Workspace:', userId);
   </script>
 
 </body>
 </html>
-
