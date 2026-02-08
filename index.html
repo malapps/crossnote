@@ -1,41 +1,26 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Cross Note Spaces</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 40px;
-            text-align: center;
-        }
-        #spaceInput {
-            padding: 10px;
-            width: 250px;
-            font-size: 16px;
-        }
-        #goBtn {
-            padding: 10px 20px;
-            font-size: 16px;
-            margin-left: 10px;
-            cursor: pointer;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>Crossnote</title>
 </head>
 <body>
 
-    <h1>Cross Note</h1>
-    <p>Create or open your own note space</p>
+  <h1>Cross Note</h1>
 
-    <input id="spaceInput" type="text" placeholder="e.g. fdr99notes">
-    <button id="goBtn">Go</button>
+  <input id="code" placeholder="Enter initials">
+  <button onclick="go()">CREATE</button>
 
-    <script>
-        document.getElementById("goBtn").addEventListener("click", function () {
-            const space = document.getElementById("spaceInput").value.trim();
-            if (space === "") return;
-            window.location.href = window.location.origin + "/crossnote/" + space;
-        });
-    </script>
+  <script>
+    function go() {
+      const code = document.getElementById('code').value.trim();
+      if (!code) return;
+
+      const base = '/crossnote/';
+      window.location.href = base + code;
+    }
+  </script>
 
 </body>
 </html>
+
