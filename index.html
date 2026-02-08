@@ -2,14 +2,79 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Crossnote</title>
+  <title>Cross Note</title>
+
+  <!-- Mobile friendly -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #D0E8D0;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 40px auto;
+      padding: 20px;
+      text-align: center;
+    }
+
+    h1 {
+      border-bottom: 2px solid #000;
+      padding-bottom: 5px;
+      margin-bottom: 20px;
+    }
+
+    .instructions {
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    input {
+      flex: 1;
+      padding: 12px;
+      font-size: 16px;
+    }
+
+    button {
+      padding: 12px 18px;
+      font-size: 16px;
+    }
+
+    @media (max-width: 480px) {
+      .input-row {
+        flex-direction: column;
+      }
+
+      button {
+        width: 100%;
+      }
+    }
+  </style>
 </head>
 <body>
 
-  <h1>Cross Note</h1>
+  <div class="container">
+    <h1>Cross Note</h1>
 
-  <input id="code" placeholder="Enter initials">
-  <button onclick="go()">CREATE</button>
+    <div class="instructions">
+      Enter a unique name to create your own notes page (no signup needed)
+    </div>
+
+    <div class="input-row">
+      <input id="code" placeholder="e.g. type your initials">
+      <button onclick="go()">CREATE</button>
+    </div>
+  </div>
 
   <script>
     function go() {
@@ -23,4 +88,3 @@
 
 </body>
 </html>
-
