@@ -1,8 +1,101 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta http-equiv="refresh" content="0; url=app.html">
+  <meta charset="UTF-8">
+  <title>Cross Note</title>
+
+  <style>
+    body {
+      font-family: sans-serif;
+      max-width: 600px;
+      margin: 40px auto;
+    }
+
+    h1 {
+      border-bottom: 2px solid #000;
+      padding-bottom: 5px;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    input {
+      flex: 1;
+      padding: 8px;
+      font-size: 16px;
+    }
+
+    button {
+      padding: 8px 16px;
+      font-size: 16px;
+    }
+
+    .note {
+      padding: 8px;
+      border-bottom: 1px solid #ddd;
+    }
+  </style>
 </head>
 <body>
+
+  <h1>Cross Note</h1>
+
+  <div class="input-row">
+    <input id="noteInput" placeholder="Type a note..">
+    <button id="saveBtn">SAVE</button>
+  </div>
+
+  <div id="notes"></div>
+
+  <script>
+    // --- extract "fdr" from /crossnote/fdr ---
+    const base = '/crossnote/';
+    const path = window.location.pathname;
+    const userId = path.replace(base, '').replace('/', '');
+
+    if (!userId) {
+      document.body.innerHTML = '<h2>Invalid workspace</h2>';
+      throw new Error('No userId');
+    }
+
+    // --- simple in-memory notes ---
+    const notes = [];
+
+    const input = document.getElementById('noteInput');
+    const button = document.getElementById('saveBtn');
+    const notesDiv = document.getElementById('notes');
+
+    button.addEventListener('click', saveNote);
+    input.addEventListener('keypress', e => {
+      if (e.key === 'Enter') saveNote();
+    });
+
+    function saveNote() {
+      const text = input.value.trim();
+      if (!text) return;
+
+      notes.unshift(text); // newest first
+      input.value = '';
+      render();
+    }
+
+    function render() {
+      notesDiv.innerHTML = '';
+      notes.forEach(note => {
+        const div = document.createElement('div');
+        div.className = 'note';
+        div.textContent = note;
+        notesDiv.appendChild(div);
+      });
+    }
+
+    // Optional: expose for debugging later
+    console.log('Workspace:', userId);
+  </script>
+
 </body>
 </html>
+
