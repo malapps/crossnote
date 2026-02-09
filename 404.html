@@ -34,11 +34,14 @@
       margin-bottom: 15px;
     }
 
-    input[type="text"] {
-      flex: 1;
-      padding: 12px;
-      font-size: 16px;
+
+    textarea {
+    flex: 1;
+    padding: 12px;
+    font-size: 16px;
+    resize: vertical;
     }
+
 
     button {
       padding: 12px 18px;
@@ -87,9 +90,10 @@
     <h1>Cross Note</h1>
 
     <div class="input-row">
-      <input id="noteInput" type="text" placeholder="Type a note..">
-      <button id="saveBtn">SAVE</button>
+  <textarea id="noteInput" rows="2" placeholder="Type a note.."></textarea>
+  <button id="saveBtn">SAVE</button>
     </div>
+
 
     <button class="delete-btn" id="deleteBtn">
       Delete Selected
@@ -118,9 +122,13 @@
     const notesDiv = document.getElementById('notes');
 
     saveBtn.addEventListener('click', saveNote);
-    input.addEventListener('keypress', e => {
-      if (e.key === 'Enter') saveNote();
+    input.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && e.ctrlKey) {
+    e.preventDefault();
+    saveNote();
+    }
     });
+
 
     deleteBtn.addEventListener('click', deleteSelected);
 
