@@ -81,7 +81,7 @@
 </div>
 
 <script>
-  // 🔹 Firebase config (PASTE YOURS HERE)
+  // 🔹 Firebase config
   const firebaseConfig = {
     apiKey: "AIzaSyDWPnTqWVUNOS1RAh9DtTE_OVMUobc9jPs",
     authDomain: "milk-a5681.firebaseapp.com",
@@ -95,21 +95,28 @@
   firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
 
-  // 🔹 Workspace id from URL
+  // 🔹 Workspace ID from URL (e.g. /crossnote/fdr)
   const base = '/crossnote/';
   const userId = location.pathname.replace(base, '').replace('/', '');
+
+  if (!userId) {
+    document.body.innerHTML = '<h2>Invalid workspace</h2>';
+    throw new Error('No workspace ID');
+  }
 
   const notesDiv = document.getElementById('notes');
   const input = document.getElementById('noteInput');
 
-  const notesRef = db
+  // 🔹 IMPORTANT: separate collection and query
+  const notesCollection = db
     .collection('workspaces')
     .doc(userId)
-    .collection('notes')
-    .orderBy('created', 'desc');
+    .collection('notes');
+
+  const notesQuery = notesCollection.orderBy('created', 'desc');
 
   // 🔹 Real-time listener
-  notesRef.onSnapshot(snapshot => {
+  notesQuery.onSnapshot(snapshot => {
     notesDiv.innerHTML = '';
 
     snapshot.forEach(doc => {
@@ -137,7 +144,7 @@
     const text = input.value.trim();
     if (!text) return;
 
-    notesRef.add({
+    notesCollection.add({
       text,
       created: firebase.firestore.FieldValue.serverTimestamp()
     });
@@ -145,13 +152,16 @@
     input.value = '';
   };
 
-  // 🔹 Delete selected
+  // 🔹 Delete selected notes
   document.getElementById('deleteBtn').onclick = async () => {
     const checks = document.querySelectorAll('input[type=checkbox]:checked');
+
     for (const cb of checks) {
-      await notesRef.doc(cb.dataset.id).delete();
+      await notesCollection.doc(cb.dataset.id).delete();
     }
   };
+
+  console.log('Workspace:', userId);
 </script>
 
 </body>
