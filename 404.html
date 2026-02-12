@@ -60,9 +60,11 @@
       border-bottom: 1px solid #aaa;
     }
 
+    /* ✅ Preserve new lines in saved notes */
     .note-text {
       flex: 1;
       word-break: break-word;
+      white-space: pre-wrap;
     }
   </style>
 </head>
@@ -107,7 +109,7 @@
   const notesDiv = document.getElementById('notes');
   const input = document.getElementById('noteInput');
 
-  // 🔹 IMPORTANT: separate collection and query
+  // 🔹 Firestore references
   const notesCollection = db
     .collection('workspaces')
     .doc(userId)
@@ -151,6 +153,14 @@
 
     input.value = '';
   };
+
+  // ✅ Ctrl + Enter saves note
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && e.ctrlKey) {
+      e.preventDefault();
+      document.getElementById('saveBtn').click();
+    }
+  });
 
   // 🔹 Delete selected notes
   document.getElementById('deleteBtn').onclick = async () => {
