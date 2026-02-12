@@ -33,6 +33,7 @@
       display: flex;
       gap: 10px;
       margin-bottom: 10px;
+      align-items: stretch; /* ✅ ensure equal height */
     }
 
     textarea {
@@ -46,6 +47,38 @@
       padding: 12px 18px;
       font-size: 16px;
       cursor: pointer;
+      height: 100%; /* ✅ fill available height */
+    }
+
+    /* 🔹 Tooltip wrapper */
+    .tooltip {
+      position: relative;
+      display: flex;
+      align-items: stretch; /* ✅ match textarea height */
+    }
+
+    /* 🔹 Tooltip text */
+    .tooltip-text {
+      visibility: hidden;
+      opacity: 0;
+      position: absolute;
+      bottom: 120%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #000;
+      color: #fff;
+      padding: 4px 8px;
+      font-size: 12px;
+      white-space: nowrap;
+      border-radius: 4px;
+      pointer-events: none;
+      transition: opacity 0.15s ease;
+    }
+
+    /* 🔹 Show tooltip on hover */
+    .tooltip:hover .tooltip-text {
+      visibility: visible;
+      opacity: 1; /* ✅ fully opaque */
     }
 
     .delete-btn {
@@ -60,7 +93,6 @@
       border-bottom: 1px solid #aaa;
     }
 
-    /* ✅ Preserve new lines in saved notes */
     .note-text {
       flex: 1;
       word-break: break-word;
@@ -75,7 +107,11 @@
 
   <div class="input-row">
     <textarea id="noteInput" rows="2" placeholder="Type a note.."></textarea>
-    <button id="saveBtn">SAVE</button>
+
+    <div class="tooltip">
+      <button id="saveBtn">SAVE</button>
+      <span class="tooltip-text">Ctrl + Enter</span>
+    </div>
   </div>
 
   <button class="delete-btn" id="deleteBtn">Delete Selected</button>
@@ -109,7 +145,6 @@
   const notesDiv = document.getElementById('notes');
   const input = document.getElementById('noteInput');
 
-  // 🔹 Firestore references
   const notesCollection = db
     .collection('workspaces')
     .doc(userId)
@@ -117,7 +152,6 @@
 
   const notesQuery = notesCollection.orderBy('created', 'desc');
 
-  // 🔹 Real-time listener
   notesQuery.onSnapshot(snapshot => {
     notesDiv.innerHTML = '';
 
@@ -141,7 +175,6 @@
     });
   });
 
-  // 🔹 Save note
   document.getElementById('saveBtn').onclick = () => {
     const text = input.value.trim();
     if (!text) return;
@@ -154,7 +187,6 @@
     input.value = '';
   };
 
-  // ✅ Ctrl + Enter saves note
   input.addEventListener('keydown', e => {
     if (e.key === 'Enter' && e.ctrlKey) {
       e.preventDefault();
@@ -162,7 +194,6 @@
     }
   });
 
-  // 🔹 Delete selected notes
   document.getElementById('deleteBtn').onclick = async () => {
     const checks = document.querySelectorAll('input[type=checkbox]:checked');
 
@@ -170,8 +201,6 @@
       await notesCollection.doc(cb.dataset.id).delete();
     }
   };
-
-  console.log('Workspace:', userId);
 </script>
 
 </body>
