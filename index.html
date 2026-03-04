@@ -85,6 +85,19 @@
   </div>
 
   <script>
+
+/* AUTO-REDIRECT TO LAST USED PAGE */
+    const last = localStorage.getItem("lastPage");
+    if (last) {
+        window.location.href = "./" + last;
+    }
+
+    document.getElementById("createBtn").addEventListener("click", () => {
+        const name = document.getElementById("nameInput").value.trim().toLowerCase();
+        if (!name) return;
+        window.location.href = "./" + name;
+    });
+
     function go() {
       const code = document.getElementById('code').value.trim();
       if (!code) return;

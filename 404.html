@@ -144,6 +144,10 @@
     throw new Error('No workspace ID');
   }
 
+  /* ---------------- AUTO-SAVE LAST USED PAGE ---------------- */
+localStorage.setItem("lastPage", userId);
+
+
   const notesDiv = document.getElementById('notes');
   const input = document.getElementById('noteInput');
 
