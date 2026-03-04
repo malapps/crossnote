@@ -14,7 +14,7 @@
 
   <script>
     // Extract the path, e.g. /fdr → "fdr"
-    const path = window.location.pathname.replace("/", "");
+    const path = window.location.pathname.replace("./", "");
 
     // If GitHub adds /404.html, strip it
     const clean = path.replace("404.html", "");
