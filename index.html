@@ -2,23 +2,90 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Enter Your Initials</title>
+  <title>Cross Note</title>
+
+  <!-- Mobile friendly -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="icon" href="icon.png" sizes="any" type="image/png" />
+
   <style>
-    body { font-family: sans-serif; max-width: 400px; margin: 4rem auto; }
-    input { width: 100%; padding: 1rem; font-size: 1.2rem; }
-    button { margin-top: 1rem; padding: 1rem; width: 100%; font-size: 1.2rem; }
+    body {
+      font-family:
+      Arial,
+      Roboto,
+      -apple-system,
+      BlinkMacSystemFont,
+      "Helvetica Neue",
+      sans-serif;
+      background: #D0E8D0;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 40px auto;
+      padding: 20px;
+      text-align: center;
+    }
+
+    h1 {
+      border-bottom: 2px solid #000;
+      padding-bottom: 5px;
+      margin-bottom: 20px;
+    }
+
+    .instructions {
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    input {
+      flex: 1;
+      padding: 12px;
+      font-size: 16px;
+    }
+
+    button {
+      padding: 12px 18px;
+      font-size: 16px;
+    }
+
+    @media (max-width: 480px) {
+      .input-row {
+        flex-direction: column;
+      }
+
+      button {
+        width: 100%;
+      }
+    }
   </style>
 </head>
 <body>
 
-  <h1>Your Vanity URL</h1>
-  <p>Enter your initials to continue:</p>
+  <div class="container">
+    <h1>Cross Note</h1>
 
-  <input id="initials" placeholder="e.g. fdr" maxlength="10">
-  <button onclick="go()">Continue</button>
+    <div class="instructions">
+      Enter a unique name to create your own notes page (no signup needed)
+    </div>
+
+    <div class="input-row">
+      <input id="val" placeholder="e.g. type your initials">
+      <button onclick="go()">Create My Page</button>
+    </div>
+  </div>
 
   <script>
-    // Auto-forward if user has a saved vanity URL
+     // Auto-forward if user has a saved vanity URL
      const last = localStorage.getItem("lastInitials");
      if (last) {
      window.location.href = "./" + last;
@@ -28,7 +95,7 @@
       const val = document.getElementById('initials').value.trim().toLowerCase();
       if (!val) return alert("Please enter something");
       window.location.href = "./" + val;
-    }
+    }  
   </script>
 
 </body>
