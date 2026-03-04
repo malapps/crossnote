@@ -2,212 +2,26 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Cross Note</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  <link rel="icon" href="icon.png" sizes="any" type="image/png" />
-
-  <!-- Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-
+  <title>App Page</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #D0E8D0;
-      margin: 0;
-      padding: 0;
-    }
-
-    .container {
-      max-width: 600px;
-      margin: 40px auto;
-      padding: 20px;
-    }
-
-    h1 {
-      border-bottom: 2px solid #000;
-      padding-bottom: 5px;
-      text-align: center;
-    }
-
-    .input-row {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 10px;
-      align-items: stretch; /* ✅ ensure equal height */
-    }
-
-    textarea {
-      flex: 1;
-      padding: 12px;
-      font-size: 16px;
-      resize: vertical;
-    }
-
-    button {
-      padding: 12px 18px;
-      font-size: 16px;
-      cursor: pointer;
-      height: 100%; /* ✅ fill available height */
-    }
-
-    /* 🔹 Tooltip wrapper */
-    .tooltip {
-      position: relative;
-      display: flex;
-      align-items: stretch; /* ✅ match textarea height */
-    }
-
-    /* 🔹 Tooltip text */
-    .tooltip-text {
-      visibility: hidden;
-      opacity: 0;
-      position: absolute;
-      bottom: 120%;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #000;
-      color: #fff;
-      padding: 4px 8px;
-      font-size: 12px;
-      white-space: nowrap;
-      border-radius: 4px;
-      pointer-events: none;
-      transition: opacity 0.15s ease;
-    }
-
-    /* 🔹 Show tooltip on hover */
-    .tooltip:hover .tooltip-text {
-      visibility: visible;
-      opacity: 1; /* ✅ fully opaque */
-    }
-
-    .delete-btn {
-      width: 100%;
-      margin-bottom: 20px;
-    }
-
-    .note {
-      display: flex;
-      gap: 10px;
-      padding: 10px 0;
-      border-bottom: 1px solid #aaa;
-    }
-
-    .note-text {
-      flex: 1;
-      word-break: break-word;
-      white-space: pre-wrap;
-    }
+    body { font-family: sans-serif; max-width: 600px; margin: 4rem auto; }
   </style>
 </head>
 <body>
 
-<div class="container">
-  <h1>Cross Note</h1>
+  <h1>Welcome</h1>
+  <p id="output"></p>
 
-  <div class="input-row">
-    <textarea id="noteInput" rows="2" placeholder="Type a note.."></textarea>
+  <script>
+    // Extract the path, e.g. /fdr → "fdr"
+    const path = window.location.pathname.replace("/", "");
 
-    <div class="tooltip">
-      <button id="saveBtn">SAVE</button>
-      <span class="tooltip-text">Ctrl + Enter</span>
-    </div>
-  </div>
+    // If GitHub adds /404.html, strip it
+    const clean = path.replace("404.html", "");
 
-  <button class="delete-btn" id="deleteBtn">Delete Selected</button>
-  <div id="notes"></div>
-</div>
-
-<script>
-  // 🔹 Firebase config
-  const firebaseConfig = {
-    apiKey: "AIzaSyDWPnTqWVUNOS1RAh9DtTE_OVMUobc9jPs",
-    authDomain: "milk-a5681.firebaseapp.com",
-    projectId: "milk-a5681",
-    storageBucket: "milk-a5681.firebasestorage.app",
-    messagingSenderId: "502144590699",
-    appId: "1:502144590699:web:7fc917c4cedfdb78fea22e",
-    measurementId: "G-KRWCX432HD"
-  };
-
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
-
-  // 🔹 Workspace ID from URL (e.g. /crossnote/fdr)
-  const base = '/crossnote/';
-  const userId = location.pathname.replace(base, '').replace('/', '');
-
-  if (!userId) {
-    document.body.innerHTML = '<h2>Invalid workspace</h2>';
-    throw new Error('No workspace ID');
-  }
-
-  /* ---------------- AUTO-SAVE LAST USED PAGE ---------------- */
-localStorage.setItem("lastPage", userId);
-
-
-  const notesDiv = document.getElementById('notes');
-  const input = document.getElementById('noteInput');
-
-  const notesCollection = db
-    .collection('workspaces')
-    .doc(userId)
-    .collection('notes');
-
-  const notesQuery = notesCollection.orderBy('created', 'desc');
-
-  notesQuery.onSnapshot(snapshot => {
-    notesDiv.innerHTML = '';
-
-    snapshot.forEach(doc => {
-      const note = doc.data();
-
-      const row = document.createElement('div');
-      row.className = 'note';
-
-      const checkbox = document.createElement('input');
-      checkbox.type = 'checkbox';
-      checkbox.dataset.id = doc.id;
-
-      const text = document.createElement('div');
-      text.className = 'note-text';
-      text.textContent = note.text;
-
-      row.appendChild(checkbox);
-      row.appendChild(text);
-      notesDiv.appendChild(row);
-    });
-  });
-
-  document.getElementById('saveBtn').onclick = () => {
-    const text = input.value.trim();
-    if (!text) return;
-
-    notesCollection.add({
-      text,
-      created: firebase.firestore.FieldValue.serverTimestamp()
-    });
-
-    input.value = '';
-  };
-
-  input.addEventListener('keydown', e => {
-    if (e.key === 'Enter' && e.ctrlKey) {
-      e.preventDefault();
-      document.getElementById('saveBtn').click();
-    }
-  });
-
-  document.getElementById('deleteBtn').onclick = async () => {
-    const checks = document.querySelectorAll('input[type=checkbox]:checked');
-
-    for (const cb of checks) {
-      await notesCollection.doc(cb.dataset.id).delete();
-    }
-  };
-</script>
+    document.getElementById("output").textContent =
+      clean ? `Your initials are: ${clean}` : "No initials detected.";
+  </script>
 
 </body>
 </html>
