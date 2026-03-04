@@ -13,15 +13,18 @@
   <p id="output"></p>
 
   <script>
-    // Extract the path, e.g. /fdr → "fdr"
-    const path = window.location.pathname.replace("./", "");
+  // Full path, e.g. "/repo/fdr"
+  const path = window.location.pathname;
 
-    // If GitHub adds /404.html, strip it
-    const clean = path.replace("404.html", "");
+  // Split into parts: ["", "repo", "fdr"]
+  const parts = path.split("/").filter(Boolean);
 
-    document.getElementById("output").textContent =
-      clean ? `Your initials are: ${clean}` : "No initials detected.";
-  </script>
+  // The last part is always the initials
+  const initials = parts.pop() || "";
+
+  document.getElementById("output").textContent =
+    initials ? `Your initials are: ${initials}` : "No initials detected.";
+</script>
 
 </body>
 </html>
