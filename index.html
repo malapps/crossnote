@@ -18,6 +18,12 @@
   <button onclick="go()">Continue</button>
 
   <script>
+    // Auto-forward if user has a saved vanity URL
+     const last = localStorage.getItem("lastInitials");
+     if (last) {
+     window.location.href = "./" + last;
+    }
+
     function go() {
       const val = document.getElementById('initials').value.trim().toLowerCase();
       if (!val) return alert("Please enter something");

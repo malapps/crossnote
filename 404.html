@@ -13,14 +13,15 @@
   <p id="output"></p>
 
   <script>
-  // Full path, e.g. "/repo/fdr"
-  const path = window.location.pathname;
-
-  // Split into parts: ["", "repo", "fdr"]
-  const parts = path.split("/").filter(Boolean);
-
-  // The last part is always the initials
+  // Split out full path to extract initials
+  const path = window.location.pathname;  
+  const parts = path.split("/").filter(Boolean);  
   const initials = parts.pop() || "";
+
+  // Save initials for future auto-forwarding by indexhtml
+  if (initials) {
+    localStorage.setItem("lastInitials", initials);
+  }
 
   document.getElementById("output").textContent =
     initials ? `Your initials are: ${initials}` : "No initials detected.";
