@@ -35,7 +35,7 @@
       display: flex;
       gap: 10px;
       margin-bottom: 10px;
-      align-items: stretch; /* ✅ ensure equal height */
+      align-items: stretch;
     }
 
     textarea {
@@ -49,17 +49,15 @@
       padding: 12px 18px;
       font-size: 16px;
       cursor: pointer;
-      height: 100%; /* ✅ fill available height */
+      height: 100%;
     }
 
-    /* 🔹 Tooltip wrapper */
     .tooltip {
       position: relative;
       display: flex;
-      align-items: stretch; /* ✅ match textarea height */
+      align-items: stretch;
     }
 
-    /* 🔹 Tooltip text */
     .tooltip-text {
       visibility: hidden;
       opacity: 0;
@@ -77,10 +75,9 @@
       transition: opacity 0.15s ease;
     }
 
-    /* 🔹 Show tooltip on hover */
     .tooltip:hover .tooltip-text {
       visibility: visible;
-      opacity: 1; /* ✅ fully opaque */
+      opacity: 1;
     }
 
     .delete-btn {
@@ -121,7 +118,7 @@
 </div>
 
 <script>
-  // 🔹 Firebase config
+  // Firebase config
   const firebaseConfig = {
     apiKey: "AIzaSyDWPnTqWVUNOS1RAh9DtTE_OVMUobc9jPs",
     authDomain: "milk-a5681.firebaseapp.com",
@@ -135,19 +132,27 @@
   firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
 
-  // 🔹 Workspace ID from URL (e.g. /crossnote/fdr)
-  const base = '/crossnote/';
-  const userId = location.pathname.replace(base, '').replace('/', '');
+  // Extract workspace ID from URL
+  let path = window.location.pathname;
+  let parts = path.split("/").filter(Boolean);
+  let userId = parts.pop() || "";
+
+  // Fix GitHub Pages SPA fallback: /404.html?path=/crossnote/fdr
+  if (userId === "404.html") {
+    const qs = new URLSearchParams(window.location.search);
+    const realPath = qs.get("path");
+    if (realPath) {
+      userId = realPath.split("/").filter(Boolean).pop() || "";
+    }
+  }
 
   if (!userId) {
     document.body.innerHTML = '<h2>Invalid workspace</h2>';
     throw new Error('No workspace ID');
   }
 
-  // Save vanity URL for future auto-forwarding
-  if (userId) {
-    localStorage.setItem("lastInitials", userId);
-  }
+  // Save vanity URL for auto-forwarding
+  localStorage.setItem("lastInitials", userId);
 
   const notesDiv = document.getElementById('notes');
   const input = document.getElementById('noteInput');
